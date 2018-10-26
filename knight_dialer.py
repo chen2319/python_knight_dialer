@@ -26,7 +26,7 @@ def get_next_dial_number(current_num):
     return NEXT_NUMBER_MAP[current_num]
 
 
-# 便利枚举出所有可拨打号码，然后计算个数: 需要计算所有号码（题目只要求数量），性能差
+# 算法1：便利枚举出所有可拨打号码，然后计算个数: 需要计算所有号码（题目只要求数量），性能差
 def count_available_number_1(start_number, num_hops):
 
     def get_number_list(start_number, num_hops, seq=None):
@@ -47,8 +47,38 @@ def count_available_number_1(start_number, num_hops):
     return count
 
 
+# 算法2：递归遍历只求数量 F(X,N) = Sum(F(next(X), N-1)), and F(X, 0) = 1, 性能还是差
+def count_available_number_2(start_number, num_hops):
+    if num_hops == 0:
+        return 1
+    count = 0
+    for next_number in get_next_dial_number(start_number):
+        count += count_available_number_2(next_number, num_hops-1)
+    return count
+
+
+# 算法3：带cache的递归遍历只求数量 F(X,N) = Sum(F(next(X), N-1)), and F(X, 0) = 1, 性能较好
+def count_available_number_3(start_number, num_hops):
+    cache = {}
+
+    def get_count_with_cache(start_number, num_hops):
+        if (start_number, num_hops) in cache:
+            return cache[(start_number, num_hops)]
+        if num_hops == 0:
+            return 1
+        count = 0
+        for next_number in get_next_dial_number(start_number):
+            count += get_count_with_cache(next_number, num_hops-1)
+        cache[(start_number, num_hops)] = count
+        return count
+    res = get_count_with_cache(start_number, num_hops)
+    return res
 
 if __name__ == '__main__':
-    res = count_available_number_1(1, 11)
-    print(res)
+    res1 = count_available_number_1(1, 11)
+    res2 = count_available_number_2(1, 11)
+    res3 = count_available_number_3(1, 100)
+    print(res1)
+    print(res2)
+    print(res3)
 
