@@ -71,11 +71,12 @@ def count_available_number_3(start_number, num_hops):
             count += get_count_with_cache(next_number, num_hops-1)
         cache[(start_number, num_hops)] = count
         return count
+
     res = get_count_with_cache(start_number, num_hops)
     return res
 
 if __name__ == '__main__':
-    res1 = count_available_number_1(1, 11)
+    res1 = count_available_number_1(6, 4)
     res2 = count_available_number_2(1, 11)
     res3 = count_available_number_3(1, 100)
     print(res1)
