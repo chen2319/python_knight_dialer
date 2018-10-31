@@ -4,10 +4,12 @@
 # 从某个特定的位置开始，在 N 跳内可以拨打多少个不同的号码？
 #
 # [原文链接](https://medium.com/@alexgolec/google-interview-questions-deconstructed-the-knights-dialer-f780d516f029)
+import numpy as np
 
 
 # 首先定义每个拨号数字能够跳到的下一个数字
 NEXT_NUMBER_MAP = {
+     0: (4, 6),
      1: (6, 8),
      2: (7, 9),
      3: (4, 8),
@@ -17,7 +19,6 @@ NEXT_NUMBER_MAP = {
      7: (2, 6),
      8: (1, 3),
      9: (2, 4),
-     0: (4, 6),
 }
 
 
@@ -58,6 +59,7 @@ def count_available_number_2(start_number, num_hops):
 
 
 # 算法3：带cache的递归遍历只求数量 F(X,N) = Sum(F(next(X), N-1)), and F(X, 0) = 1, 性能较好
+# cache 保存以前计算过的F(next(X), N-1)
 def count_available_number_3(start_number, num_hops):
     cache = {}
 
@@ -75,11 +77,59 @@ def count_available_number_3(start_number, num_hops):
     res = get_count_with_cache(start_number, num_hops)
     return res
 
+
+# 算法4：矩阵计算, 以所有号码号码作为起始点的矩阵, 类似斐波那契数列
+# O(logN)
+def count_available_number_4(num_hops):
+
+    # 定义下一跳拨号矩阵
+    NEXT_NUMBER_MATRIX = np.array( [[0,0,0,0,1,0,1,0,0,0],
+                                    [0,0,0,0,0,0,1,0,1,0],
+                                    [0,0,0,0,0,0,0,1,0,1],
+                                    [0,0,0,0,1,0,0,0,1,0],
+                                    [1,0,0,1,0,0,0,0,0,1],
+                                    [0,0,0,0,0,0,0,0,0,0],
+                                    [1,1,0,0,0,0,0,1,0,0],
+                                    [0,0,1,0,0,0,1,0,0,0],
+                                    [0,1,0,1,0,0,0,0,0,0],
+                                    [0,0,1,0,1,0,0,0,0,0]])
+    # 定义第0跳号码数量的矩阵
+    DIALER_NUM_MATRIX_0 = np.array([1, 1, 1, 1, 1, 1, 1, 1, 1, 1])
+
+    # 求一个举证的N次方，这次算法用二进制移位算法。（也可以用分治法），时间复杂度 O(logN)
+    def matrix_power_n(matrix, n):
+        square = matrix
+        res = np.array( [[1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                         [0, 1, 0, 0, 0, 0, 0, 0, 0, 0],
+                         [0, 0, 1, 0, 0, 0, 0, 0, 0, 0],
+                         [0, 0, 0, 1, 0, 0, 0, 0, 0, 0],
+                         [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
+                         [0, 0, 0, 0, 0, 1, 0, 0, 0, 0],
+                         [0, 0, 0, 0, 0, 0, 1, 0, 0, 0],
+                         [0, 0, 0, 0, 0, 0, 0, 1, 0, 0],
+                         [0, 0, 0, 0, 0, 0, 0, 0, 1, 0],
+                         [0, 0, 0, 0, 0, 0, 0, 0, 0, 1]])
+        while n != 0:
+            if n & 1 != 0:
+                res = np.dot(res, square)
+            square = np.dot(square, square)
+            n = n >> 1
+        return res
+    dialer_res = np.dot(matrix_power_n(NEXT_NUMBER_MATRIX, num_hops), DIALER_NUM_MATRIX_0)
+    return dialer_res
+
+
+
+
+
+
 if __name__ == '__main__':
-    res1 = count_available_number_1(6, 4)
-    res2 = count_available_number_2(1, 11)
-    res3 = count_available_number_3(1, 100)
+    res1 = count_available_number_1(1, 1)
     print(res1)
+    res2 = count_available_number_2(1, 10)
     print(res2)
+    res3 = count_available_number_3(1, 30)
     print(res3)
+    res4 = count_available_number_4(30)
+    print(res4)
 
