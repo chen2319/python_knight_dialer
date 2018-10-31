@@ -115,6 +115,7 @@ def count_available_number_4(num_hops):
             square = np.dot(square, square)
             n = n >> 1
         return res
+
     dialer_res = np.dot(matrix_power_n(NEXT_NUMBER_MATRIX, num_hops), DIALER_NUM_MATRIX_0)
     return dialer_res
 
