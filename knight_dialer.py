@@ -120,17 +120,15 @@ def count_available_number_4(num_hops):
     return dialer_res
 
 
-
-
-
-
 if __name__ == '__main__':
     res1 = count_available_number_1(1, 1)
     print(res1)
     res2 = count_available_number_2(1, 10)
+
     print(res2)
-    res3 = count_available_number_3(1, 30)
+    res3 = count_available_number_3(1, 50)
     print(res3)
-    res4 = count_available_number_4(30)
+
+    res4 = count_available_number_4(50)
     print(res4)
 
