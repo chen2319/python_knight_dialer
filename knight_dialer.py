@@ -120,15 +120,44 @@ def count_available_number_4(num_hops):
     return dialer_res
 
 
+# 算法4：矩阵计算, 改进
+# O(logN)
+def count_available_number_5(start_number, num_hops):
+
+    N = num_hops
+    # 定义下一跳拨号矩阵
+    NEXT_NUMBER_MATRIX = np.matrix( [[0,0,0,0,1,0,1,0,0,0],
+                                    [0,0,0,0,0,0,1,0,1,0],
+                                    [0,0,0,0,0,0,0,1,0,1],
+                                    [0,0,0,0,1,0,0,0,1,0],
+                                    [1,0,0,1,0,0,0,0,0,1],
+                                    [0,0,0,0,0,0,0,0,0,0],
+                                    [1,1,0,0,0,0,0,1,0,0],
+                                    [0,0,1,0,0,0,1,0,0,0],
+                                    [0,1,0,1,0,0,0,0,0,0],
+                                    [0,0,1,0,1,0,0,0,0,0]])
+    res, N = 1, N
+    while N:
+        if N % 2: res = res * NEXT_NUMBER_MATRIX
+        NEXT_NUMBER_MATRIX = NEXT_NUMBER_MATRIX * NEXT_NUMBER_MATRIX
+        N //= 2
+    return np.sum(res[start_number])
+
+
 if __name__ == '__main__':
-    res1 = count_available_number_1(1, 1)
+    res1 = count_available_number_1(1, 2)
     print(res1)
     res2 = count_available_number_2(1, 10)
 
     print(res2)
-    res3 = count_available_number_3(1, 50)
+    res3 = count_available_number_3(1, 20)
     print(res3)
 
-    res4 = count_available_number_4(50)
+    res4 = count_available_number_4(20)
     print(res4)
+
+    res5 = count_available_number_5(2,20)
+    print(res5)
+
+
 
