@@ -137,10 +137,14 @@ def count_available_number_5(start_number, num_hops):
                                     [0,1,0,1,0,0,0,0,0,0],
                                     [0,0,1,0,1,0,0,0,0,0]])
     res, N = 1, N
+    # while N:
+    #     if N % 2: res = res * NEXT_NUMBER_MATRIX
+    #     NEXT_NUMBER_MATRIX = NEXT_NUMBER_MATRIX * NEXT_NUMBER_MATRIX
+    #     N //= 2
     while N:
-        if N % 2: res = res * NEXT_NUMBER_MATRIX
+        if N & 1 != 0: res = res * NEXT_NUMBER_MATRIX
         NEXT_NUMBER_MATRIX = NEXT_NUMBER_MATRIX * NEXT_NUMBER_MATRIX
-        N //= 2
+        N = N >> 1
     return np.sum(res[start_number])
 
 
